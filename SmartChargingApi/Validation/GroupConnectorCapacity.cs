@@ -32,6 +32,7 @@ namespace SmartChargingApi.Validation
             do
             {
                 var nearestConnectors = allConnectorsInGroup
+                    .Except(result)
                     .OrderBy(c => Math.Abs(c.MaxCurrentInAmps - (requiredCapacity - freedCapacity)))
                     .ThenBy(c => c.MaxCurrentInAmps > (requiredCapacity - freedCapacity))
                     .ToList();

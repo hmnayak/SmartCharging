@@ -1,4 +1,6 @@
-﻿namespace SmartChargingApi.Models.Api
+﻿using System;
+
+namespace SmartChargingApi.Models.Api
 {
     public class SuggestedConnector
     {
@@ -7,5 +9,23 @@
         public float MaxCurrentInAmps { get; set; }
 
         public string ChargeStationName { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                SuggestedConnector other = (SuggestedConnector)obj;
+                return ConnectorId == other.ConnectorId;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Tuple.Create(ConnectorId, MaxCurrentInAmps).GetHashCode();
+        }
     }
 }

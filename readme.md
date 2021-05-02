@@ -33,6 +33,3 @@
 + Data needs to be persisted in a disk-based database. 
 
 + Application configuration such as database connection string should be stored outside the codebase like in the runtime environment or a configuration file. 
-
-
-
