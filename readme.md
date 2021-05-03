@@ -22,9 +22,7 @@
 
 + More unit and integration tests are required to ensure both happy and unhappy flows work as expected. 
 
-+ It is considered a security best practice to not expose sequential surrogate keys via api. Here, a numeric id is used as surrogate key to uniquely identify the resources group, charge station and connector. It would be preferable to involve some form of random number generation scheme such as UUID.
-
-+ An api for the resource Charge Station and CRUD action methods for all mentioned resources is required.
++ It is a security best practice to not expose database surrogate keys in api contracts. Here, the resources group, charge station and connector are identified by their numeric database-generated sequential id. A different identification scheme should be used to refer to resources using api. For example, the resource name followed by a formatted numeric id like Group001, ChargeStation005, Connector008 etc. 
 
 + Logging could be added to track application execution, errors, warnings and information that could help with monitoring/debugging. 
 

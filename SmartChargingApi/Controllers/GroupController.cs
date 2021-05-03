@@ -22,7 +22,7 @@ namespace SmartChargingApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups()
         {
-            var groups = await _smartChargingRepository.GetAllGroupAsync();
+            var groups = await _smartChargingRepository.GetAllGroupsAsync();
 
             return new OkObjectResult(groups.Select(GroupDto.FromDomain));
         }

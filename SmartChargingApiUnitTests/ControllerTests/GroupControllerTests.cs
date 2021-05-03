@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -19,7 +18,7 @@ namespace SmartChargingApiUnitTests
         public async void GetGroups_ReturnsOkResult_IncludingAllGroups()
         {
             _mockRepository
-                .Setup(repo => repo.GetAllGroupAsync())
+                .Setup(repo => repo.GetAllGroupsAsync())
                 .ReturnsAsync(new List<Group>
                 {
                     new Group { Name = "group1" },

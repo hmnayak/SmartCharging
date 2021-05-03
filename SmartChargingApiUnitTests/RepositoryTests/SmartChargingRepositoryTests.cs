@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -37,7 +35,7 @@ namespace SmartChargingApiUnitTests
 
             await repository.AddGroup(new Group { Name = "group2" });
 
-            var groups = await repository.GetAllGroupAsync();
+            var groups = await repository.GetAllGroupsAsync();
 
             Assert.Equal(2, groups.Count);
         }
