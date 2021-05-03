@@ -12,24 +12,27 @@ namespace SmartChargingApi.Controllers
     [ApiController]
     public class ChargeStationController : ControllerBase
     {
-        private readonly ISmartChargingRepository _smartChargingRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public ChargeStationController(ISmartChargingRepository smartChargingRepository)
+        private readonly IChargeStationRepository _chargeStationRepository;
+
+        public ChargeStationController(IGroupRepository groupRepository, IChargeStationRepository chargeStationRepository)
         {
-            _smartChargingRepository = smartChargingRepository;
+            _groupRepository = groupRepository;
+            _chargeStationRepository = chargeStationRepository;
         }
 
         // GET: api/Group
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ChargeStationDto>>> GetChargeStations([FromRoute] int groupId)
         {
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
             if (group == null)
             {
                 return NotFound("Group does not exist");
             }
 
-            var chargeStations = await _smartChargingRepository.GetAllChargeStationsAsync(groupId);
+            var chargeStations = await _chargeStationRepository.GetAllChargeStationsAsync(groupId);
 
             return new OkObjectResult(chargeStations.Select(ChargeStationDto.FromDomain));
         }
@@ -38,7 +41,7 @@ namespace SmartChargingApi.Controllers
         [HttpGet("{chargeStationId}")]
         public async Task<ActionResult<ChargeStationDto>> GetChargeStation(int chargeStationId)
         {
-            var chargeStation = await _smartChargingRepository.GetChargeStation(chargeStationId);
+            var chargeStation = await _chargeStationRepository.GetChargeStation(chargeStationId);
 
             if (chargeStation == null)
             {
@@ -60,9 +63,9 @@ namespace SmartChargingApi.Controllers
 
             var chargeStation = chargeStationDto.ToDomain();
 
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
 
-            await _smartChargingRepository.AddChargeStation(chargeStation, groupId);
+            await _chargeStationRepository.AddChargeStation(chargeStation, groupId);
 
             return CreatedAtAction(nameof(GetChargeStation),
                 new { groupId, chargeStationId = chargeStation.ChargeStationId },
@@ -72,14 +75,14 @@ namespace SmartChargingApi.Controllers
         [HttpPut("{chargeStationId}")]
         public async Task<IActionResult> PutChargeStation(int chargeStationId, ChargeStationDto chargeStationDto)
         {
-            var chargeStation = await _smartChargingRepository.GetChargeStation(chargeStationId);
+            var chargeStation = await _chargeStationRepository.GetChargeStation(chargeStationId);
 
             if (chargeStation == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.UpdateChargeStation(chargeStationId, chargeStationDto.ToDomain());
+            await _chargeStationRepository.UpdateChargeStation(chargeStationId, chargeStationDto.ToDomain());
 
             return NoContent();
         }
@@ -87,14 +90,14 @@ namespace SmartChargingApi.Controllers
         [HttpDelete("{chargeStationId}")]
         public async Task<IActionResult> DeleteChargeStation(int chargeStationId)
         {
-            var chargeStation = await _smartChargingRepository.GetChargeStation(chargeStationId);
+            var chargeStation = await _chargeStationRepository.GetChargeStation(chargeStationId);
 
             if (chargeStation == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.DeleteChargeStation(chargeStationId);
+            await _chargeStationRepository.DeleteChargeStation(chargeStationId);
 
             return NoContent();
         }

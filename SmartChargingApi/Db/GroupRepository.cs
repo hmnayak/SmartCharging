@@ -6,14 +6,14 @@ using SmartChargingApi.Models.Domain;
 
 namespace SmartChargingApi.Db
 {
-    public class SmartChargingRepository : ISmartChargingRepository
+    public class GroupRepository : IGroupRepository
     {
         private readonly SmartChargingContext _smartChargingContext;
 
         private const string GroupNestedCollections = "ChargeStations.Connectors";
         private const string ChargeStationNestedCollections = "Connectors";
 
-        public SmartChargingRepository(SmartChargingContext smartChargingContext)
+        public GroupRepository(SmartChargingContext smartChargingContext)
         {
             _smartChargingContext = smartChargingContext;
         }

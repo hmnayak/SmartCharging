@@ -12,11 +12,15 @@ namespace SmartChargingApi.Controllers
     [ApiController]
     public class ConnectorController : ControllerBase
     {
-        private readonly ISmartChargingRepository _smartChargingRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public ConnectorController(ISmartChargingRepository smartChargingRepository)
+        private readonly IConnectorRepository _connectorRepository;
+
+
+        public ConnectorController(IGroupRepository groupRepository, IConnectorRepository connectorRepository)
         {
-            _smartChargingRepository = smartChargingRepository;
+            _groupRepository = groupRepository;
+            _connectorRepository = connectorRepository;
         }
 
         // GET: api/Group
@@ -25,7 +29,7 @@ namespace SmartChargingApi.Controllers
             [FromRoute] int groupId,
             [FromRoute] int chargeStationId)
         {
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
             if (group == null)
             {
                 return NotFound("Group does not exist");
@@ -37,7 +41,7 @@ namespace SmartChargingApi.Controllers
                 return NotFound("Charge station does not exist");
             }
 
-            var connectors = await _smartChargingRepository.GetAllConnectorsAsync(groupId, chargeStationId);
+            var connectors = await _connectorRepository.GetAllConnectorsAsync(groupId, chargeStationId);
 
             return new OkObjectResult(connectors.Select(ConnectorDto.FromDomain));
         }
@@ -46,7 +50,7 @@ namespace SmartChargingApi.Controllers
         [HttpGet("{connectorId}")]
         public async Task<ActionResult<ConnectorDto>> GetConnector(int connectorId)
         {
-            var connector = await _smartChargingRepository.GetConnector(connectorId);
+            var connector = await _connectorRepository.GetConnector(connectorId);
 
             if (connector == null)
             {
@@ -69,7 +73,12 @@ namespace SmartChargingApi.Controllers
 
             var connector = connectorDto.ToDomain();
 
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
+
+            if (group.ChargeStations.First(cs => cs.ChargeStationId ==chargeStationId).Connectors.Count == 5)
+            {
+                return BadRequest("Station limit of five connectors has been reached.");
+            }
 
             if (!GroupConnectorCapacity.CanAddConnector(group, connector))
             {
@@ -82,7 +91,7 @@ namespace SmartChargingApi.Controllers
                 });
             }
 
-            await _smartChargingRepository.AddConnector(connector, chargeStationId, groupId);
+            await _connectorRepository.AddConnector(connector, chargeStationId, groupId);
 
             return CreatedAtAction(nameof(GetConnector),
                 new { groupId, chargeStationId, connectorId = connector.ConnectorId },
@@ -96,14 +105,14 @@ namespace SmartChargingApi.Controllers
             [FromRoute] int connectorId,
             [FromBody] ConnectorDto connectorDto)
         {
-            var connector = await _smartChargingRepository.GetConnector(connectorId);
+            var connector = await _connectorRepository.GetConnector(connectorId);
 
             if (connector == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.UpdateConnector(connectorId, connectorDto.ToDomain());
+            await _connectorRepository.UpdateConnector(connectorId, connectorDto.ToDomain());
 
             return NoContent();
         }
@@ -111,14 +120,14 @@ namespace SmartChargingApi.Controllers
         [HttpDelete("{connectorId}")]
         public async Task<IActionResult> DeleteConnector(int connectorId)
         {
-            var connector = await _smartChargingRepository.GetConnector(connectorId);
+            var connector = await _connectorRepository.GetConnector(connectorId);
 
             if (connector == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.DeleteConnector(connectorId);
+            await _connectorRepository.DeleteConnector(connectorId);
 
             return NoContent();
         }

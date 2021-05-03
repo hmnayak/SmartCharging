@@ -8,7 +8,7 @@ using Xunit;
 
 namespace SmartChargingApiUnitTests
 {
-    public class SmartChargingRepositoryTests
+    public class GroupRepositoryTests
     {
         [Fact]
         public async void AddGroup_Saves_Group_Via_Context()
@@ -18,7 +18,7 @@ namespace SmartChargingApiUnitTests
             var mockContext = new Mock<SmartChargingContext>();
             mockContext.Setup(m => m.Groups).Returns(mockDbSet.Object);
 
-            var repository = new SmartChargingRepository(mockContext.Object);
+            var repository = new GroupRepository(mockContext.Object);
             await repository.AddGroup(new Group("group123", 5, Array.Empty<ChargeStation>()));
 
             mockDbSet.Verify(m => m.Add(It.Is<Group>(g => g.Name == "group123")), Times.Once);
@@ -29,7 +29,7 @@ namespace SmartChargingApiUnitTests
         public async void GetAllGroups_GetsGroupsInDb()
         {
             using var dbContext = new SmartChargingContext();
-            var repository = new SmartChargingRepository(dbContext);
+            var repository = new GroupRepository(dbContext);
 
             await repository.AddGroup(new Group { Name = "group1" });
 

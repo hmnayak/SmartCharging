@@ -12,7 +12,7 @@ namespace SmartChargingApiUnitTests
 {
     public class GroupControllerTests
     {
-        private Mock<ISmartChargingRepository> _mockRepository = new Mock<ISmartChargingRepository>();
+        private readonly Mock<IGroupRepository> _mockRepository = new Mock<IGroupRepository>();
 
         [Fact]
         public async void GetGroups_ReturnsOkResult_IncludingAllGroups()

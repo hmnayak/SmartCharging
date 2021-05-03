@@ -22,7 +22,9 @@ namespace SmartChargingApi
         {
             services.AddScoped<SmartChargingContext>();
 
-            services.AddScoped<ISmartChargingRepository, SmartChargingRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IChargeStationRepository, ChargeStationRepository>();
+            services.AddScoped<IConnectorRepository, ConnectorRepository>();
 
             services.AddControllers();
 

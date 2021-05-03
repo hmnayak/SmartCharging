@@ -11,18 +11,18 @@ namespace SmartChargingApi.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        private readonly ISmartChargingRepository _smartChargingRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public GroupController(ISmartChargingRepository smartChargingRepository)
+        public GroupController(IGroupRepository groupRepository)
         {
-            _smartChargingRepository = smartChargingRepository;
+            _groupRepository = groupRepository;
         }
 
         // GET: api/Group
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups()
         {
-            var groups = await _smartChargingRepository.GetAllGroupsAsync();
+            var groups = await _groupRepository.GetAllGroupsAsync();
 
             return new OkObjectResult(groups.Select(GroupDto.FromDomain));
         }
@@ -31,7 +31,7 @@ namespace SmartChargingApi.Controllers
         [HttpGet("{groupId}")]
         public async Task<ActionResult<GroupDto>> GetGroup(int groupId)
         {
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
 
             if (@group == null)
             {
@@ -46,14 +46,14 @@ namespace SmartChargingApi.Controllers
         [HttpPut("{groupId}")]
         public async Task<IActionResult> PutGroup(int groupId, GroupDto groupDto)
         {
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
 
             if (@group == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.UpdateGroup(groupId, groupDto.ToDomain());
+            await _groupRepository.UpdateGroup(groupId, groupDto.ToDomain());
 
             return NoContent();
         }
@@ -70,7 +70,7 @@ namespace SmartChargingApi.Controllers
 
             var group = groupDto.ToDomain();
 
-            await _smartChargingRepository.AddGroup(group);
+            await _groupRepository.AddGroup(group);
 
             return CreatedAtAction(nameof(GetGroup), new { groupId = group.GroupId }, GroupDto.FromDomain(group));
         }
@@ -79,14 +79,14 @@ namespace SmartChargingApi.Controllers
         [HttpDelete("{groupId}")]
         public async Task<IActionResult> DeleteGroup(int groupId)
         {
-            var group = await _smartChargingRepository.GetGroup(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
 
             if (@group == null)
             {
                 return NotFound();
             }
 
-            await _smartChargingRepository.DeleteGroup(group.GroupId);
+            await _groupRepository.DeleteGroup(group.GroupId);
 
             return NoContent();
         }
